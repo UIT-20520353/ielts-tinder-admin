@@ -1,0 +1,13 @@
+{
+  "error": {
+    "title": "Error !!!",
+    "validate": {
+      "login": {
+        "invalid-credential": "Oops! Your login credentials are incorrect."
+      },
+      "user": {
+        "is-not-admin": "Access denied. This feature is restricted to administrators only."
+      }
+    }
+  }
+}
