@@ -1,17 +1,17 @@
 import testApi from "@/api/testApi";
 import { useAppDispatch } from "@/app/hooks";
 import { initialTestDetail } from "@/app/initial-states";
+import { EQuestionType } from "@/enums/question";
 import useAccessToken from "@/hooks/useAccessToken";
 import useHandleResponseError from "@/hooks/useHandleResponseError";
 import { ITestDetail } from "@/models/test";
 import { addLoading, removeLoading } from "@/redux/global-slice";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Typography } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import TestOverview from "../components/test-overview";
-import { Typography } from "antd";
 import SingleQuestion from "../components/single-question";
-import { EQuestionType } from "@/enums/question";
+import TestOverview from "../components/test-overview";
 
 interface TestDetailProps {}
 
@@ -69,10 +69,21 @@ const TestDetail: React.FunctionComponent<TestDetailProps> = () => {
 
       <TestOverview test={test} />
 
-      <div className="w-full mt-5">
+      <div className="flex items-center justify-between w-full mt-5">
         <Typography.Title level={3} className="m-0">
           Question list
         </Typography.Title>
+
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          className="text-base"
+          onClick={() =>
+            navigate("/tests/add-question", { state: { testId: test.id } })
+          }
+        >
+          Add question
+        </Button>
       </div>
       {test.questions.map((question) =>
         question.type === EQuestionType.SENTENCE_READING ||
