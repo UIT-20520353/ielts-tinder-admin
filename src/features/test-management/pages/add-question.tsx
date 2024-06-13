@@ -1,5 +1,9 @@
+import questionApi from "@/api/questionApi";
 import TextEditor from "@/components/common/text-editor";
 import { EQuestionType } from "@/enums/question";
+import useAccessToken from "@/hooks/useAccessToken";
+import useHandleResponseError from "@/hooks/useHandleResponseError";
+import useHandleResponseSuccess from "@/hooks/useHandleResponseSuccess";
 import { QuestionTypeMapper } from "@/mappers";
 import { IAddQuestionForm } from "@/models/form/add-question";
 import {
@@ -25,7 +29,10 @@ interface AddQuestionPageProps {}
 const AddQuestionPage: React.FunctionComponent<AddQuestionPageProps> = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [form] = Form.useForm<IAddQuestionForm>();
+  const [form] = Form.useForm();
+  const { accessToken } = useAccessToken();
+  const handleResponseError = useHandleResponseError();
+  const handleResponseSuccess = useHandleResponseSuccess();
 
   const [type, setType] = useState<EQuestionType>(
     EQuestionType.SENTENCE_READING
@@ -36,8 +43,9 @@ const AddQuestionPage: React.FunctionComponent<AddQuestionPageProps> = () => {
   const initialFormValues = useMemo(
     (): IAddQuestionForm => ({
       type: EQuestionType.SENTENCE_READING,
-      question: "",
       paragraph: "",
+      questionDetails: [],
+      description: "",
     }),
     []
   );
@@ -55,9 +63,33 @@ const AddQuestionPage: React.FunctionComponent<AddQuestionPageProps> = () => {
     setType(form.getFieldValue("type") as EQuestionType);
   }, [form]);
 
-  const onSubmit = (data: IAddQuestionForm) => {
-    console.log(data);
+  const onSubmit = async (data: IAddQuestionForm) => {
+    const formData = new FormData();
+    formData.append("questionType", data.type);
+    formData.append("testId", testId);
+    formData.append("questionDetails[0].content", "dasdasd");
+    formData.append("questionDetails[0].answers[0].content", "dasdasd");
+    formData.append("questionDetails[0].answers[0].isCorrect", "false");
+
+    const { ok, error } = await questionApi.createQuestion(
+      formData,
+      accessToken
+    );
+
+    if (ok) {
+      handleResponseSuccess("Create question successfully");
+      navigate(`/tests/${testId}`);
+    }
+
+    if (error) {
+      handleResponseError(error);
+    }
   };
+
+  useEffect(() => {
+    form.setFieldValue("paragraph", "");
+    form.setFieldValue("questionDetails", []);
+  }, [type, form]);
 
   useEffect(() => {
     if (!testId || Number.isNaN(Number(testId))) {
@@ -192,32 +224,45 @@ const AddQuestionPage: React.FunctionComponent<AddQuestionPageProps> = () => {
                                 />
                               </Space>
                             ))}
-                            <Button
-                              type="dashed"
-                              onClick={() => subOpt.add()}
-                              block
-                              icon={<PlusOutlined />}
-                            >
-                              Add answer
-                            </Button>
+                            {subFields.length < 5 && (
+                              <Button
+                                type="dashed"
+                                onClick={() => subOpt.add()}
+                                block
+                                icon={<PlusOutlined />}
+                              >
+                                Add answer
+                              </Button>
+                            )}
                           </div>
                         )}
                       </Form.List>
                     </Form.Item>
                   </Card>
                 ))}
-
-                {/* {(type === EQuestionType.PARAGRAPH_READING ||
-                  type === EQuestionType.MULTIPLE_LISTENING) && ( */}
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  block
-                  icon={<PlusOutlined />}
-                >
-                  Add question
-                </Button>
-                {/* )} */}
+                {(type === EQuestionType.SENTENCE_READING ||
+                  type === EQuestionType.SINGLE_LISTENING) &&
+                  fields.length < 1 && (
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add question
+                    </Button>
+                  )}
+                {(type === EQuestionType.PARAGRAPH_READING ||
+                  type === EQuestionType.MULTIPLE_LISTENING) && (
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add question
+                  </Button>
+                )}
               </div>
             )}
           </Form.List>
