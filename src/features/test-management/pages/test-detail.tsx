@@ -79,7 +79,7 @@ const TestDetail: React.FunctionComponent<TestDetailProps> = () => {
           icon={<PlusOutlined />}
           className="text-base"
           onClick={() =>
-            navigate("/tests/add-question", { state: { testId: test.id } })
+            navigate("/questions/add", { state: { testId: test.id } })
           }
         >
           Add question

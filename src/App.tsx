@@ -9,6 +9,7 @@ import UserDetailPage from "@/features/user-management/pages/user-detail";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import TestDetail from "./features/test-management/pages/test-detail";
+import AddQuestionPage from "./features/test-management/pages/add-question";
 
 interface AppProps {}
 
@@ -30,6 +31,9 @@ const App: React.FunctionComponent<AppProps> = () => {
         <Route path="tests">
           <Route index element={<TestManagement />} />
           <Route path=":testId" element={<TestDetail />} />
+        </Route>
+        <Route path="questions">
+          <Route path="add" element={<AddQuestionPage />} />
         </Route>
         <Route index element={<Dashboard />} />
       </Route>
