@@ -67,9 +67,21 @@ const AddQuestionPage: React.FunctionComponent<AddQuestionPageProps> = () => {
     const formData = new FormData();
     formData.append("questionType", data.type);
     formData.append("testId", testId);
-    formData.append("questionDetails[0].content", "dasdasd");
-    formData.append("questionDetails[0].answers[0].content", "dasdasd");
-    formData.append("questionDetails[0].answers[0].isCorrect", "false");
+    formData.append("paragraph", data.paragraph || "");
+    formData.append("description", data.description || "");
+    data.questionDetails.forEach((question, index) => {
+      formData.append(`questionDetails[${index}].content`, question.content);
+      question.answers.forEach((answer, answerIndex) => {
+        formData.append(
+          `questionDetails[${index}].answers[${answerIndex}].content`,
+          answer.content
+        );
+        formData.append(
+          `questionDetails[${index}].answers[${answerIndex}].isCorrect`,
+          String(answer.isCorrect ? true : false)
+        );
+      });
+    });
 
     const { ok, error } = await questionApi.createQuestion(
       formData,

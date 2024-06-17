@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SingleQuestion from "../components/single-question";
 import TestOverview from "../components/test-overview";
+import MultipleQuestion from "../components/multiple-question";
 
 interface TestDetailProps {}
 
@@ -92,7 +93,12 @@ const TestDetail: React.FunctionComponent<TestDetailProps> = () => {
             key={`test-${test.id}-question-${question.id}`}
             question={question}
           />
-        ) : null
+        ) : (
+          <MultipleQuestion
+            key={`test-${test.id}-question-${question.id}`}
+            question={question}
+          />
+        )
       )}
     </div>
   );

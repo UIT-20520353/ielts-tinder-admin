@@ -102,6 +102,7 @@ const TestManagement: React.FunctionComponent<TestManagementProps> = () => {
         ),
       },
       {
+        align: "center",
         title: "Action",
         render: (_, record: ITest) => (
           <div className="flex items-center gap-3">
@@ -112,15 +113,14 @@ const TestManagement: React.FunctionComponent<TestManagementProps> = () => {
             >
               <EditOutlined />
             </Link>
-            <Button
-              icon={<DeleteOutlined />}
-              type="primary"
-              danger
-              className="!min-w-[40px] !min-h-[40px]"
-              // onClick={() =>
-              //   showConfirmBlockOrUnblock(record.id, record.status)
-              // }
-            />
+            {record.level !== ETestLevel.ENTRY_TEST && (
+              <Button
+                icon={<DeleteOutlined />}
+                type="primary"
+                danger
+                className="!min-w-[40px] !min-h-[40px]"
+              />
+            )}
           </div>
         ),
       },

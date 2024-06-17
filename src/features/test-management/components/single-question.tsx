@@ -1,6 +1,7 @@
 import { QuestionTypeMapper } from "@/mappers";
 import { IQuestion } from "@/models/question";
-import { Tag, Typography } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Card, Tag, Typography } from "antd";
 import React from "react";
 
 interface SingleQuestionProps {
@@ -13,15 +14,34 @@ const SingleQuestion: React.FunctionComponent<SingleQuestionProps> = ({
   const indexes: string[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
   return (
-    <div className="w-full p-5 mt-3 bg-white rounded-md shadow-sm">
-      <div className="flex items-center justify-center w-full gap-3 mb-3">
-        <Typography.Text className="text-base font-semibold">
-          Question type:
-        </Typography.Text>
-        <Typography.Text className="text-base">
-          {QuestionTypeMapper[question.type]}
-        </Typography.Text>
-      </div>
+    <Card
+      title={
+        <div className="flex items-center w-full gap-3">
+          <Typography.Text className="text-base">
+            Question type:
+          </Typography.Text>
+          <Typography.Text className="text-base">
+            {QuestionTypeMapper[question.type]}
+          </Typography.Text>
+        </div>
+      }
+      className="mt-3"
+      extra={
+        <div className="flex items-center gap-2">
+          <Button
+            className="min-w-[36px] min-h-[36px]"
+            type="primary"
+            icon={<EditOutlined style={{ fontSize: "16px" }} />}
+          />
+          <Button
+            className="min-w-[36px] min-h-[36px]"
+            type="primary"
+            danger
+            icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
+          />
+        </div>
+      }
+    >
       {!!question.questionDetails.length && (
         <div className="flex flex-col items-start w-full gap-2">
           <Typography.Text className="text-base">
@@ -42,7 +62,7 @@ const SingleQuestion: React.FunctionComponent<SingleQuestionProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 
